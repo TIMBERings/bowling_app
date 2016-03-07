@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Frames</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Frame</th>
+      <th>First</th>
+      <th>Second</th>
+      <th>Third</th>
+      <th>Score</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @frames.each do |frame| %>
+      <tr>
+        <td><%= frame.frame %></td>
+        <td><%= frame.first %></td>
+        <td><%= frame.second %></td>
+        <td><%= frame.third %></td>
+        <td><%= frame.score %></td>
+        <td><%= link_to 'Show', frame %></td>
+        <td><%= link_to 'Edit', edit_frame_path(frame) %></td>
+        <td><%= link_to 'Destroy', frame, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Frame', new_game_frame_path %>
