@@ -7,8 +7,11 @@ class Frame < ActiveRecord::Base
                                     greater_than_or_equal_to: 1,
                                     less_than_or_equal_to: 12 }
 
-  validates_format_of :first, with: /^((f|F)|(s|S)?[0-9]{1}|10)$/, multiline: true
-  validates_format_of :second, with: /^((f|F)|[0-9]{1}|10)$/, allow_blank: true, multiline: true
+  validates_format_of :first, with: /\A((x|X)|(f|F)|(s|S)?[0-9]{1}|10)\z/
+  validates_format_of :second, with: /\A((f|F)|[0-9]{1}|10||\/)\z/, allow_blank: true
+
+  before_save :convert_first
+  before_save :convert_second if self.second.present?
 
   def total
     total = second.presence ? convert_first + convert_second : convert_first unless twelfth?
@@ -17,12 +20,12 @@ class Frame < ActiveRecord::Base
   end
 
   def strike?
-    convert_first == 10
+    first.to_i == 10
   end
 
   def spare?
     return false unless second.presence
-    convert_first != 10 && convert_first + convert_second == 10
+    first.to_i != 10 && first.to_i + second.to_i == 10
   end
 
   def open?
@@ -42,15 +45,19 @@ class Frame < ActiveRecord::Base
   end
 
   def convert_first
-    Frame.convert_to_number(first)
+    self.split = true if self.first.downcase.include? 's'
+    self.first = Frame.convert_to_number(self.first)
   end
 
   def convert_second
-    Frame.convert_to_number(second)
+    self.second = self.second == '/' ? 10 - self.first.to_i : Frame.convert_to_number(self.second)
   end
 
+  private
+
   def self.convert_to_number(string)
-    0 if string.downcase == 'f'
+    return 0 if string.downcase == 'f'
+    return 10 if string.downcase == 'x'
     /(\d{1,2})/.match(string).to_a[0].to_i
   end
 end

@@ -218,26 +218,77 @@ RSpec.describe Frame, type: :model do
   end
 
   describe '#convert_first' do
-    let(:frame) { FactoryGirl.create(:frame) }
+    let(:frame) { FactoryGirl.create(:frame, first: '0', second: '0') }
     it 'handles numbers' do
       frame.first = '10'
-      expect(frame.convert_first).to eq 10
+      frame.convert_first
+      expect(frame.first).to eq '10'
+
       frame.first = '3'
-      expect(frame.convert_first).to eq 3
+      frame.convert_first
+      expect(frame.first).to eq '3'
     end
 
-    it 'handles splits' do
+    it 'scores splits' do
       frame.first = 's8'
-      expect(frame.convert_first).to eq 8
+      frame.convert_first
+      expect(frame.first).to eq '8'
+      expect(frame.split?).to eq true
+
       frame.first = 'S3'
-      expect(frame.convert_first).to eq 3
+      frame.convert_first
+      expect(frame.first).to eq '3'
+      expect(frame.split?).to eq true
     end
 
     it 'handles fouls' do
       frame.first = 'F'
-      expect(frame.convert_first).to eq 0
+      frame.convert_first
+      expect(frame.first).to eq '0'
+
       frame.first = 'f'
-      expect(frame.convert_first).to eq 0
+      frame.convert_first
+      expect(frame.first).to eq '0'
+    end
+
+    it 'handles strikes' do
+      frame.first = 'X'
+      frame.convert_first
+      expect(frame.first).to eq '10'
+
+      frame.first = 'x'
+      frame.convert_first
+      expect(frame.first).to eq '10'
+    end
+  end
+
+  describe '#convert_second' do
+    let(:frame) { FactoryGirl.create(:frame, first: '0', second: '0') }
+    it 'handles spares' do
+      frame.first = '4'
+      frame.second = '/'
+      frame.convert_second
+      expect(frame.second).to eq '6'
+    end
+
+    it 'handles fouls' do
+      frame.second = 'F'
+      frame.convert_second
+      expect(frame.second).to eq '0'
+
+      frame.first = 'f'
+      frame.convert_second
+      expect(frame.second).to eq '0'
+    end
+
+    it 'handles numbers' do
+      frame.second = '10'
+      frame.convert_second
+      expect(frame.second).to eq '10'
+
+      frame.second = '3'
+      frame.convert_second
+      expect(frame.second).to eq '3'
     end
   end
 end

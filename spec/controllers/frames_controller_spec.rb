@@ -89,6 +89,11 @@ let(:game) {FactoryGirl.create(:game)}
         post :create, {:frame => valid_attributes, game_id: game.id}, valid_session
         expect(response).to redirect_to(Frame.last)
       end
+
+      it 'adds a flash notice' do
+        post :create, {:frame => valid_attributes, game_id: game.id}, valid_session
+        expect(flash[:notice]).to eq 'Frame was successfully created.'
+      end
     end
 
     context "with invalid params" do
@@ -115,7 +120,8 @@ let(:game) {FactoryGirl.create(:game)}
         put :update, {:id => frame.to_param, :frame => new_attributes}, valid_session
         frame.reload
         expect(frame.frame).to eq 3
-        expect(frame.first).to eq 'S4'
+        expect(frame.first).to eq '4'
+        expect(frame.split?).to eq true
         expect(frame.second).to eq 'f'
       end
 
@@ -129,6 +135,12 @@ let(:game) {FactoryGirl.create(:game)}
         frame = Frame.create! valid_attributes
         put :update, {:id => frame.to_param, :frame => valid_attributes}, valid_session
         expect(response).to redirect_to(frame)
+      end
+
+      it 'adds a flash notice' do
+        frame = Frame.create! valid_attributes
+        put :update, {:id => frame.to_param, :frame => valid_attributes}, valid_session
+        expect(flash[:notice]).to eq 'Frame was successfully updated.'
       end
     end
 
