@@ -10,7 +10,7 @@ class Game < ActiveRecord::Base
   validates :handicap, numericality: { only_integer: true,
                                        allow_blank: true }
 
- def finalize_game
+  def finalize_game
     score_game
     total_frames
   end
@@ -74,5 +74,4 @@ class Game < ActiveRecord::Base
   def score_open(index)
     self.frames[index].first.to_i + self.frames[index].second.to_i
   end
-
 end

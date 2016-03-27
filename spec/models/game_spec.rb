@@ -131,3 +131,4 @@ RSpec.describe Game, type: :model do
       expect(scores).to eq [20, 49, 68, 77, 107, 135, 154, 163, 192, 212, nil]
     end
   end
+end
