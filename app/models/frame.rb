@@ -8,7 +8,7 @@ class Frame < ActiveRecord::Base
                                     less_than_or_equal_to: 12 }
 
   validates_format_of :first, with: /\A((x|X)|(f|F)|(s|S)?[0-9]{1}|10)\z/
-  validates_format_of :second, with: /\A((f|F)|[0-9]{1}|10||\/)\z/, allow_blank: true
+  validates_format_of :second, with: /\A((x|X)|(f|F)|[0-9]{1}|10||\/)\z/, allow_blank: true
 
   before_save :convert_first
   before_save :convert_second if self.second.present?
